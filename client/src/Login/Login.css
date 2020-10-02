@@ -1,0 +1,24 @@
+.login {
+  text-align: center;
+}
+.login_container {
+  margin: 10%;
+}
+
+.login_container > h1 {
+  font-size: 24px;
+}
+.login_container > form {
+  border: 1px solid lightgray;
+  width: fit-content;
+  margin: auto;
+  padding: 10%;
+}
+.login_form > label {
+  display: block;
+  padding: 10px;
+}
+.login_form > input {
+  padding: 5px;
+  margin: 5px;
+}
