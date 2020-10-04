@@ -1,21 +1,21 @@
 import React, { useState } from "react";
-import { v4 as uuid } from "uuid";
-import { setUser } from "../redux/Action/Action";
+import { loginUser } from "../redux/Action/userAction";
+
 import { useDispatch } from "react-redux";
 
 import "./Login.css";
 
 function Login() {
   const [input, setinput] = useState("");
-
+  const [name, setname] = useState("Login");
   const dispatch = useDispatch();
   const handleSubmit = (e) => {
     e.preventDefault();
+    setname("Plz.. wait ");
     const user = {
-      id: uuid(),
-      name: input,
+      id: input,
     };
-    dispatch(setUser(user));
+    dispatch(loginUser(user));
   };
   return (
     <div className="login">
@@ -23,15 +23,16 @@ function Login() {
         <h1>Login Plz</h1>
         <form onSubmit={handleSubmit}>
           <div className="login_form">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">ID</label>
             <input
+              placeholder="Enter your id "
               type="text"
               name="name"
               required
               onChange={(e) => setinput(e.target.value)}
             />
           </div>
-          <button type="submit">Enter</button>
+          <button type="submit">{name}</button>
         </form>
       </div>
     </div>

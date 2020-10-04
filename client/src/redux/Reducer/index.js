@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import roomReducer from "./Reducer";
+import userReducer from "./userReducer";
 
 const reducer = combineReducers({
-  rooms: roomReducer,
+  user: userReducer,
 });
 
 export default reducer;

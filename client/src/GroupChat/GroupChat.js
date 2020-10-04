@@ -26,12 +26,15 @@ function Chat({ user }) {
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
-    console.log(State.messages);
-    if (State.messages) {
-      let findRoom = State.messages.find((message) => message._id === roomId);
+
+    if (State.groupmessages) {
+      let findRoom = State.groupmessages.find(
+        (message) => message._id === roomId
+      );
+      console.log(findRoom);
       setroom(findRoom);
     }
-  }, [roomId, user, room]);
+  }, [roomId, room]);
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -43,12 +46,12 @@ function Chat({ user }) {
   }, [user]);
   useEffect(() => {
     if (user && room)
-      socket.emit("user-and-room", { user, room }, (error) =>
+      socket.emit("group-and-room", { user, group: room }, (error) =>
         console.log(error)
       );
   }, [room]);
   useEffect(() => {
-    socket.on("message", (message) => setMessages([...Messages, message]));
+    socket.on("groupmessage", (message) => setMessages([...Messages, message]));
     console.log(Messages);
   }, [Messages, room]);
 
@@ -56,8 +59,10 @@ function Chat({ user }) {
     e.preventDefault();
 
     input &&
-      socket.emit("sendMessage", { message: input, room, user }, () =>
-        setinput("")
+      socket.emit(
+        "groupsendMessage",
+        { message: input, grouproom: room, user },
+        () => setinput("")
       );
   };
   return (
@@ -66,19 +71,12 @@ function Chat({ user }) {
         <Avatar src={`https://picsum.photos/200/${seed}`} />
 
         <div className="chat_headerInfo">
-          <h3>
-            {user.id === (room.sender && room.sender.id)
-              ? room.reciver && room.reciver.name
-              : room.sender && room.sender.name}
-          </h3>
+          <h3>{room && room.name}</h3>
           <p>
-            {user.id === (room.sender && room.sender.id)
-              ? room.reciver && room.reciver.isOnline
-                ? "Online"
-                : "Offline"
-              : room.sender && room.sender.isOnline
-              ? "Online"
-              : "Offline"}
+            {room.users && room.users.map((user, i) => user.name + " ")}
+            {/* {room.users
+              ? room.users[0].name && room.users[0].name
+              : room.users[1].name && room.users[1].name} */}
           </p>
         </div>
 
@@ -112,11 +110,11 @@ function Chat({ user }) {
               <p
                 key={i}
                 className={`chat_massage ${
-                  message.userId === user.id && "chat_receiver"
+                  message.user.id === user.id && "chat_receiver"
                 }`}
               >
                 <span className="chat_name">
-                  {message.user ? message.user : null}
+                  {message.user ? message.user.name : null}
                 </span>
                 {message.text ? message.text : null}
                 <span className="chat_timeStamp">3:53pm</span>

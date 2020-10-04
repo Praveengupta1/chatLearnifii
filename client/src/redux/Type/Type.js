@@ -1,7 +1,5 @@
-// Room
-export const LOADING_ROOM = "LOADING_ROOM";
-export const GET_ROOM = "GET_ROOM";
+// USER
 
-// user
-
-export const SET_USERNAME = "SET_USERNAME";
+export const FETCH_USER_DATA = "FETCH_USER_DATA";
+export const FETCHING_USER_SUCCESS = "FETCHING_USER_DATA";
+export const FETCHING_USER_FAILED = "FETCHING_USER_FAILED";

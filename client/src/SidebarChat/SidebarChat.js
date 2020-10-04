@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import "./SidebarChat.css";
 
-function SidebarChat({ addNewChat, id, name }) {
+function SidebarChat({ isGroup, id, name }) {
   const [seed, setSeed] = useState("");
 
   useEffect(() => {
@@ -13,7 +13,10 @@ function SidebarChat({ addNewChat, id, name }) {
   }, []);
 
   return (
-    <Link className="sidebarChat_Link" to={`/rooms/${id}`}>
+    <Link
+      className="sidebarChat_Link"
+      to={!isGroup ? `/rooms/${id}` : `/grouprooms/${id}`}
+    >
       <div className="sidebarChat">
         <Avatar src={`https://picsum.photos/200/${seed}`} />
 
