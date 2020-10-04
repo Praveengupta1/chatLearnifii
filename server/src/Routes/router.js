@@ -4,6 +4,6 @@ const Route = require("express").Router();
 
 Route.post("/create", oneChat);
 Route.post("/groupcreate", groupChat);
-Route.get("/user", getUser);
+Route.post("/user", getUser);
 
 module.exports = Route;

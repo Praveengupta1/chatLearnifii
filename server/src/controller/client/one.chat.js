@@ -5,6 +5,7 @@ const colors = require("../../colors/colors");
 
 exports.oneChat = async (req, res) => {
   try {
+    console.log(req.body);
     const { senderid, sendername, recivername, reciverid } = req.body;
     if (!senderid || !sendername || !reciverid || !recivername) {
       throw { message: "sender and reciver is required " };
@@ -39,18 +40,24 @@ exports.oneChat = async (req, res) => {
     }
 
     const senderMessage = await Message.findOne({
-      sender: senderid.trim().toLowerCase(),
-      reciver: reciverid.trim().toLowerCase(),
+      "sender.id": senderid.trim().toLowerCase(),
+      "reciver.id": reciverid.trim().toLowerCase(),
     });
     const reciverMessage = await Message.findOne({
-      sender: reciverid.trim().toLowerCase(),
-      reciver: senderid.trim().toLowerCase(),
+      "sender.id": reciverid.trim().toLowerCase(),
+      "reciver.id": senderid.trim().toLowerCase(),
     });
 
     if (!senderMessage && !reciverMessage) {
       const newconversation = new Message({
-        sender: senderid.toLowerCase(),
-        reciver: reciverid.toLowerCase(),
+        sender: {
+          id: senderid.toLowerCase(),
+          name: sendername.toLowerCase(),
+        },
+        reciver: {
+          id: reciverid.toLowerCase(),
+          name: recivername.toLowerCase(),
+        },
       });
 
       await newconversation.save();

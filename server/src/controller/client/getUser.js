@@ -5,6 +5,7 @@ const colors = require("../../colors/colors");
 
 exports.getUser = async (req, res) => {
   try {
+    console.log(req.body);
     const { id } = req.body;
 
     if (!id) {
