@@ -81,3 +81,15 @@ export function showMessage(type, msg, time, onClose) {
   const Message = message[type];
   Message(msg, time, onClose);
 }
+
+export const handletime = (time) => {
+  let hour = new Date(time).getHours();
+  let minute = new Date(time).getMinutes();
+  let type = "am";
+  if (hour > 12) {
+    hour = hour - 12;
+    type = "pm";
+  }
+
+  return `${hour}:${minute}${type}`;
+};

@@ -8,8 +8,6 @@ export const loginUser = (payload, callback) => {
     API.loginUser(payload, (error, response) => {
       dispatch({ type: ACTION_TYPE.FETCH_USER_DATA });
 
-      console.log(error, response);
-
       if (!error) {
         if (response.statuscode === 403) {
           showMessage("error", "unsucessfully login check your id ", 5);
@@ -34,4 +32,35 @@ export const loginUser = (payload, callback) => {
       }
     });
   };
+};
+
+// export const getMessage = (payload, callback) => {
+//   console.log(payload);
+//   return function (dispatch) {
+//     payload = { ...payload };
+//     API.message(payload, (error, response) => {
+//       // dispatch({ type: ACTION_TYPE.FETCHING_MESSAGE });
+
+//       if (!error) {
+//         dispatch({
+//           type: ACTION_TYPE.FETCH_MESSAGE_SUCCESS,
+//           payload: response,
+//         });
+//         if (callback) callback();
+//       }
+//       if (error) {
+//         showMessage("error", "unsucessfully login check your id ", 5);
+//         // dispatch({
+//         //   type: ACTION_TYPE.FETCH_MESSAGE_FAILED,
+//         //   payload: response,
+//         // });
+//       }
+//     });
+//   };
+// };
+export const updatemessage = (payload) => (dispatch) => {
+  dispatch({
+    type: ACTION_TYPE.FETCHING_MESSAGE,
+    payload: payload.message,
+  });
 };

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { IconButton } from "@material-ui/core";
-
+import io from "socket.io-client";
 import SearchOutlined from "@material-ui/icons/SearchOutlined";
 import SidebarChat from "../SidebarChat/SidebarChat";
 import { useSelector, useDispatch } from "react-redux";
 import "./Sidebar.css";
-
+import { BASE_URL } from "../../config/urls";
 import ListIcon from "@material-ui/icons/List";
 
+let socket;
 function Sidebar() {
   const State = useSelector((state) => state.user);
-  const [messages, setmessages] = useState([]);
-  const [groupmessages, setgroupmessages] = useState([]);
-  const [user, setuser] = useState();
+  const [messages, setmessages] = useState(State.messages);
+  const [groupmessages, setgroupmessages] = useState(State.groupmessages);
+  const [user, setuser] = useState(State.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,6 +21,24 @@ function Sidebar() {
     setmessages(State.messages);
     setgroupmessages(State.groupmessages);
   }, [dispatch, State.loading]);
+
+  useEffect(() => {
+    socket = io(BASE_URL);
+  }, [user]);
+  useEffect(() => {
+    console.log("now user");
+    console.log(user);
+    socket.emit(
+      "make_connections",
+      { user, messages, groupmessages },
+      (error) => console.log(error)
+    );
+    return () => {
+      socket.emit("leave", { user });
+      socket.emit("disconnect");
+      socket.off();
+    };
+  }, [user]);
 
   return (
     <div className="sidebar">

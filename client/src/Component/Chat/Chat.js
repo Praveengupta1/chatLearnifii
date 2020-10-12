@@ -5,13 +5,13 @@ import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import "./Chat.css";
-
+import { updatemessage } from "../../redux/Action/userAction";
+import { handletime } from "../../config/utils";
 let socket;
 function Chat({ user }) {
-  const State = useSelector((state) => state.user);
-
+  const dispatch = useDispatch();
   const [seed, setSeed] = useState("");
 
   const { roomId } = useParams();
@@ -23,18 +23,21 @@ function Chat({ user }) {
   const [input, setinput] = useState("");
 
   const [Messages, setMessages] = useState([]);
+  const State = useSelector((state) => state.user);
+
+  let index = State.messages.findIndex((mess) => mess._id === roomId);
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
 
-    if (State.groupmessages) {
-      let findRoom = State.groupmessages.find(
-        (message) => message._id === roomId
-      );
+    console.log(State.messages);
+
+    if (State.messages) {
+      let findRoom = State.messages.find((message) => message._id === roomId);
       console.log(findRoom);
       setroom(findRoom);
     }
-  }, [roomId, room]);
+  }, [roomId, user, State.messages[index].messages.length]);
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -44,25 +47,17 @@ function Chat({ user }) {
       socket.off();
     };
   }, [user]);
+
   useEffect(() => {
-    if (user && room)
-      socket.emit("group-and-room", { user, group: room }, (error) =>
-        console.log(error)
-      );
-  }, [room]);
-  useEffect(() => {
-    socket.on("groupmessage", (message) => setMessages([...Messages, message]));
-    console.log(Messages);
+    socket.on("message", (message) => dispatch(updatemessage(message)));
   }, [Messages, room]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
 
     input &&
-      socket.emit(
-        "groupsendMessage",
-        { message: input, grouproom: room, user },
-        () => setinput("")
+      socket.emit("sendMessage", { message: input, room, user }, () =>
+        setinput("")
       );
   };
   return (
@@ -71,12 +66,19 @@ function Chat({ user }) {
         <Avatar src={`https://picsum.photos/200/${seed}`} />
 
         <div className="chat_headerInfo">
-          <h3>{room && room.name}</h3>
+          <h3>
+            {user.id === (room.sender && room.sender.id)
+              ? room.reciver && room.reciver.name
+              : room.sender && room.sender.name}
+          </h3>
           <p>
-            {room.users && room.users.map((user, i) => user.name + " ")}
-            {/* {room.users
-              ? room.users[0].name && room.users[0].name
-              : room.users[1].name && room.users[1].name} */}
+            {user.id === (room.sender && room.sender.id)
+              ? room.reciver && room.reciver.isOnline
+                ? "Online"
+                : "Offline"
+              : room.sender && room.sender.isOnline
+              ? "Online"
+              : "Offline"}
           </p>
         </div>
 
@@ -98,7 +100,9 @@ function Chat({ user }) {
                   {message.name ? message.name : null}
                 </span>
                 {message.message ? message.message : null}
-                <span className="chat_timeStamp">3:53pm</span>
+                <span className="chat_timeStamp">
+                  {handletime(message.time)}
+                </span>
               </p>
             )
             //)
@@ -110,14 +114,16 @@ function Chat({ user }) {
               <p
                 key={i}
                 className={`chat_massage ${
-                  message.user.id === user.id && "chat_receiver"
+                  message.userId === user.id && "chat_receiver"
                 }`}
               >
                 <span className="chat_name">
-                  {message.user ? message.user.name : null}
+                  {message.user ? message.user : null}
                 </span>
                 {message.text ? message.text : null}
-                <span className="chat_timeStamp">3:53pm</span>
+                <span className="chat_timeStamp">
+                  {handletime(message.time)}
+                </span>
               </p>
             )
           //    <p className={`chat_massage ${message.user !== user.name.trim().toLowerCase() && "chat_receiver"}`}>

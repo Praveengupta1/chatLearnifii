@@ -1,9 +1,9 @@
 import React from "react";
-import Sidebar from "./Sidebar/Sidebar";
-import Chat from "./Chat/Chat";
-import GroupChat from "./GroupChat/GroupChat";
+import Sidebar from "../Component/Sidebar/Sidebar";
+import Chat from "../Component/Chat/Chat";
+import GroupChat from "../Component/GroupChat/GroupChat";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Login from "./Login/Login";
+import Login from "../Component/Login/Login";
 import { useSelector } from "react-redux";
 
 import "./App.css";
