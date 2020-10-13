@@ -8,7 +8,7 @@ import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
 import "./Chat.css";
 import { updatemessage } from "../../redux/Action/userAction";
-import { handletime } from "../../config/utils";
+import { handletime , handleDate} from "../../config/utils";
 let socket;
 function Chat({ user }) {
   const dispatch = useDispatch();
@@ -41,11 +41,6 @@ function Chat({ user }) {
 
   useEffect(() => {
     socket = io(ENDPOINT);
-
-    return () => {
-      socket.emit("disconnect");
-      socket.off();
-    };
   }, [user]);
 
   useEffect(() => {
@@ -90,12 +85,15 @@ function Chat({ user }) {
           room.messages.map(
             (message, i) => (
               //message.roomId === room._id && (
+            <>
+              <p className="message_date">{handleDate(message.time) }</p>
               <p
                 key={i}
                 className={`chat_massage ${
                   message.id === user.id && "chat_receiver"
                 }`}
               >
+               
                 <span className="chat_name">
                   {message.name ? message.name : null}
                 </span>
@@ -104,6 +102,7 @@ function Chat({ user }) {
                   {handletime(message.time)}
                 </span>
               </p>
+            </>
             )
             //)
           )}

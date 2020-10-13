@@ -93,3 +93,35 @@ export const handletime = (time) => {
 
   return `${hour}:${minute}${type}`;
 };
+let returnDate = null;
+export const handleDate = (time) => {
+  let date = new Date(time).getDate();
+  let month = new Date(time).getMonth();
+  let year = new Date(time).getFullYear();
+  let Currentdate = new Date().getDate();
+  let Currentmonth = new Date().getMonth();
+  let Currentyear = new Date().getFullYear();
+  
+  if (!returnDate || returnDate !== `${date}/${month}/${year}`) {
+    if (
+      date === Currentdate &&
+      month === Currentmonth &&
+      year === Currentyear
+    ) {
+      returnDate = `${date}/${month}/${year}`;
+      return "Today";
+    } else if (
+      date === Currentdate - 1 &&
+      month === Currentmonth &&
+      year === Currentyear
+    ) {
+      returnDate = `${date}/${month}/${year}`;
+      return "YesterDay";
+    } else {
+      returnDate = `${date}/${month}/${year}`;
+      return `${date}/${month}/${year}`;
+    }
+  } else {
+    return null;
+  }
+};

@@ -26,8 +26,6 @@ function Sidebar() {
     socket = io(BASE_URL);
   }, [user]);
   useEffect(() => {
-    console.log("now user");
-    console.log(user);
     socket.emit(
       "make_connections",
       { user, messages, groupmessages },

@@ -38,7 +38,9 @@
     overflow-y: auto;
     color: black
 }
-
+.message_date{
+    text-align : center
+}
 .chat_massage {
     position: relative;
     font-size: 16px;
