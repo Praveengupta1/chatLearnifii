@@ -20,7 +20,7 @@ function Sidebar() {
     setuser(State.user);
     setmessages(State.messages);
     setgroupmessages(State.groupmessages);
-  }, [dispatch, State.loading]);
+  }, [dispatch, State.groupmessages, State.messages, State.user, State.loading]);
 
   useEffect(() => {
     socket = io(BASE_URL);
@@ -36,7 +36,7 @@ function Sidebar() {
       socket.emit("disconnect");
       socket.off();
     };
-  }, [user]);
+  }, [user, groupmessages, messages]);
 
   return (
     <div className="sidebar">

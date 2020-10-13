@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Avatar } from "@material-ui/core";
 
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
@@ -8,7 +8,7 @@ import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
 import "./Chat.css";
 import { updatemessage } from "../../redux/Action/userAction";
-import { handletime , handleDate} from "../../config/utils";
+import { handletime, handleDate } from "../../config/utils";
 let socket;
 function Chat({ user }) {
   const dispatch = useDispatch();
@@ -22,22 +22,21 @@ function Chat({ user }) {
   //https://chatlearnifiibypraveen.herokuapp.com/
   const [input, setinput] = useState("");
 
-  const [Messages, setMessages] = useState([]);
   const State = useSelector((state) => state.user);
 
   let index = State.messages.findIndex((mess) => mess._id === roomId);
-
+  let length =
+    State.messages[index].messages.length &&
+    State.messages[index].messages.length;
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
 
-    console.log(State.messages);
-
     if (State.messages) {
       let findRoom = State.messages.find((message) => message._id === roomId);
-      console.log(findRoom);
+
       setroom(findRoom);
     }
-  }, [roomId, user, State.messages[index].messages.length]);
+  }, [roomId, user, State.messages, length]);
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -45,7 +44,7 @@ function Chat({ user }) {
 
   useEffect(() => {
     socket.on("message", (message) => dispatch(updatemessage(message)));
-  }, [Messages, room]);
+  }, [dispatch, room]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -55,6 +54,15 @@ function Chat({ user }) {
         setinput("")
       );
   };
+
+  var messageBody = document.querySelector("#chat_body");
+
+  useEffect(() => {
+    console.log("again ");
+    if (messageBody && messageBody.scrollHeight && messageBody.clientHeight)
+      messageBody.scrollTop =
+        messageBody.scrollHeight - messageBody.clientHeight;
+  }, [messageBody, length]);
   return (
     <div className="chat">
       <div className="chat_header">
@@ -80,20 +88,16 @@ function Chat({ user }) {
         <div className="chat_headerRight">Dance class</div>
       </div>
 
-      <div className="chat_body">
+      <div className="chat_body" id="chat_body">
         {room.messages &&
-          room.messages.map(
-            (message, i) => (
-              //message.roomId === room._id && (
-            <>
-              <p className="message_date">{handleDate(message.time) }</p>
+          room.messages.map((message, i) => (
+            <Fragment key={i}>
+              <p className="message_date">{handleDate(message.time)}</p>
               <p
-                key={i}
                 className={`chat_massage ${
                   message.id === user.id && "chat_receiver"
                 }`}
               >
-               
                 <span className="chat_name">
                   {message.name ? message.name : null}
                 </span>
@@ -102,35 +106,8 @@ function Chat({ user }) {
                   {handletime(message.time)}
                 </span>
               </p>
-            </>
-            )
-            //)
-          )}
-
-        {Messages.map(
-          (message, i) =>
-            message.roomId === room._id && (
-              <p
-                key={i}
-                className={`chat_massage ${
-                  message.userId === user.id && "chat_receiver"
-                }`}
-              >
-                <span className="chat_name">
-                  {message.user ? message.user : null}
-                </span>
-                {message.text ? message.text : null}
-                <span className="chat_timeStamp">
-                  {handletime(message.time)}
-                </span>
-              </p>
-            )
-          //    <p className={`chat_massage ${message.user !== user.name.trim().toLowerCase() && "chat_receiver"}`}>
-          //   <span className="chat_name">Praveeb</span>
-          //   Left
-          //   <span className="chat_timeStamp">3:53pm</span>
-          // </p>
-        )}
+            </Fragment>
+          ))}
       </div>
       <div className="chat_footer">
         <InsertEmoticonIcon />
