@@ -14,7 +14,7 @@ const messageSchema = new mongoose.Schema(
     },
     messages: [
       {
-        time: { type: Date, default: new Date() },
+        time: { type: Date, default: Date.now() },
         name: { type: String, required: true, trim: true },
         id: { type: String, required: true, trim: true },
         message: { type: String, required: true, trim: true },
