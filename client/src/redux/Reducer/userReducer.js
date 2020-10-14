@@ -10,13 +10,26 @@ const initailState = {
 
 const userReducer = (state = initailState, action) => {
   switch (action.type) {
+    case ACTION_TYPE.FETCHING_GROUP_MESSAGE: {
+      let index = state.groupmessages.findIndex(
+        (mess) => mess._id === action.payload._id
+      );
+      console.log(action.payload);
+      console.log(index);
+      state.groupmessages[index] = action.payload;
+      let group = state.groupmessages;
+      return {
+        ...state,
+        groupmessages: group,
+      };
+    }
     case ACTION_TYPE.FETCHING_MESSAGE: {
       let index = state.messages.findIndex(
         (mess) => mess._id === action.payload._id
       );
-     
+
       state.messages[index] = action.payload;
-      
+
       return {
         ...state,
         messages: state.messages,

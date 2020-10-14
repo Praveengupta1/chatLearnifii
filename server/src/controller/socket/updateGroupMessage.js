@@ -10,6 +10,7 @@ exports.newGroupMessage = async ({ user, message, id }) => {
             name: user.name.toLowerCase(),
             id: user.id.toLowerCase(),
             message: message,
+            time: new Date(),
           },
         },
       }

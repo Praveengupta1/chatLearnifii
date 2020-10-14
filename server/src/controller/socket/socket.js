@@ -4,6 +4,7 @@ const { newMessage } = require("./newMessage");
 const { newGroupMessage } = require("./updateGroupMessage");
 const { getOneMessage } = require("./getOneMessage");
 const Message = require("../../model/onetoonechat.model");
+const GroupMessage = require("../../model/groupmessage.model");
 
 const User = require("../../model/user.model");
 
@@ -29,22 +30,7 @@ const chatSocket = function (io) {
       for (let i = 0; i < groupmessages.length; i++) {
         socket.join(groupmessages[i]._id);
       }
-      // if (user && room) {
-      //   users[_id] = user;
-      //   rooms[_id] = room;
-      //   updateUser({ user, isOnline: true });
-      //   updateMessage({ user: user.id, room: room._id, isOnline: true });
-      //   socket.join(room._id);
-      // }
     });
-
-    // socket.on("group-and-room", (data, callback) => {
-    //   const { user, group } = data;
-    //   // console.log(user, group);
-    //   if (user && group) {
-    //     socket.join(group._id);
-    //   }
-    // });
 
     socket.on("sendMessage", async ({ message, user, room }, callback) => {
       console.log("id" + room._id);
@@ -60,16 +46,19 @@ const chatSocket = function (io) {
       callback();
     });
 
-    socket.on("groupsendMessage", ({ message, user, grouproom }, callback) => {
-      // console.log(message, user, grouproom);
-      //newGroupMessage({ user, message, id: grouproom._id });
-      io.to(grouproom._id).emit("groupmessage", {
-        text: message,
-        user: user,
-        roomId: grouproom._id,
-      });
-      callback();
-    });
+    socket.on(
+      "groupsendMessage",
+      async ({ message, user, grouproom }, callback) => {
+        //console.log(message, user, grouproom);
+        await newGroupMessage({ user, message, id: grouproom._id });
+
+        let updategroupmessage = await GroupMessage.findOne({
+          _id: grouproom._id,
+        });
+        io.emit("groupmessage", updategroupmessage);
+        callback();
+      }
+    );
 
     socket.on("disconnect", () => {
       updateUser({ user: users[_id], isOnline: false });

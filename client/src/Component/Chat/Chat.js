@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "./Chat.css";
 import { updatemessage } from "../../redux/Action/userAction";
 import { handletime, handleDate } from "../../config/utils";
+import { BASE_URL } from "../../config/urls";
 let socket;
 function Chat({ user }) {
   const dispatch = useDispatch();
@@ -18,7 +19,6 @@ function Chat({ user }) {
 
   const [room, setroom] = useState("");
 
-  const ENDPOINT = "http://localhost:4000/";
   //https://chatlearnifiibypraveen.herokuapp.com/
   const [input, setinput] = useState("");
 
@@ -39,7 +39,7 @@ function Chat({ user }) {
   }, [roomId, user, State.messages, length]);
 
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io(BASE_URL);
   }, [user]);
 
   useEffect(() => {

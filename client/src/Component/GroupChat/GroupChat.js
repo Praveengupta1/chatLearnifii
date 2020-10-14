@@ -1,28 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Avatar } from "@material-ui/core";
 
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import "./Chat.css";
+import { BASE_URL } from "../../config/urls";
+import { updategroupmessage } from "../../redux/Action/userAction";
+import { handletime, handleDate } from "../../config/utils";
 
 let socket;
 function Chat({ user }) {
   const State = useSelector((state) => state.user);
-
+  const dispatch = useDispatch();
   const [seed, setSeed] = useState("");
 
   const { roomId } = useParams();
 
   const [room, setroom] = useState("");
 
-  const ENDPOINT = "https://chatlearnifii.herokuapp.com/";
   //https://chatlearnifiibypraveen.herokuapp.com/
   const [input, setinput] = useState("");
 
-  const [Messages, setMessages] = useState([]);
+  let index = State.groupmessages.findIndex((mess) => mess._id === roomId);
+  let length =
+    State.groupmessages[index].messages.length &&
+    State.groupmessages[index].messages.length;
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
@@ -31,29 +36,25 @@ function Chat({ user }) {
       let findRoom = State.groupmessages.find(
         (message) => message._id === roomId
       );
-      console.log(findRoom);
+
       setroom(findRoom);
     }
-  }, [roomId, room]);
+  }, [roomId, room, State.groupmessages, length, user]);
 
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io(BASE_URL);
 
     return () => {
       socket.emit("disconnect");
       socket.off();
     };
   }, [user]);
+
   useEffect(() => {
-    if (user && room)
-      socket.emit("group-and-room", { user, group: room }, (error) =>
-        console.log(error)
-      );
-  }, [room]);
-  useEffect(() => {
-    socket.on("groupmessage", (message) => setMessages([...Messages, message]));
-    console.log(Messages);
-  }, [Messages, room]);
+    socket.on("groupmessage", (message) =>
+      dispatch(updategroupmessage(message))
+    );
+  }, [dispatch, room]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -65,6 +66,14 @@ function Chat({ user }) {
         () => setinput("")
       );
   };
+  var messageBody = document.querySelector("#chat_body");
+
+  useEffect(() => {
+    console.log("again ");
+    if (messageBody && messageBody.scrollHeight && messageBody.clientHeight)
+      messageBody.scrollTop =
+        messageBody.scrollHeight - messageBody.clientHeight;
+  }, [messageBody, length]);
   return (
     <div className="chat">
       <div className="chat_header">
@@ -83,11 +92,13 @@ function Chat({ user }) {
         <div className="chat_headerRight">Dance class</div>
       </div>
 
-      <div className="chat_body">
+      <div className="chat_body" id="chat_body">
         {room.messages &&
           room.messages.map(
             (message, i) => (
               //message.roomId === room._id && (
+                <Fragment key={i}>
+              <p className="message_date">{handleDate(message.time)}</p>
               <p
                 key={i}
                 className={`chat_massage ${
@@ -98,34 +109,12 @@ function Chat({ user }) {
                   {message.name ? message.name : null}
                 </span>
                 {message.message ? message.message : null}
-                <span className="chat_timeStamp">3:53pm</span>
+                <span className="chat_timeStamp">{handletime(message.time)}</span>
               </p>
+              </Fragment>
             )
-            //)
+            
           )}
-
-        {Messages.map(
-          (message, i) =>
-            message.roomId === room._id && (
-              <p
-                key={i}
-                className={`chat_massage ${
-                  message.user.id === user.id && "chat_receiver"
-                }`}
-              >
-                <span className="chat_name">
-                  {message.user ? message.user.name : null}
-                </span>
-                {message.text ? message.text : null}
-                <span className="chat_timeStamp">3:53pm</span>
-              </p>
-            )
-          //    <p className={`chat_massage ${message.user !== user.name.trim().toLowerCase() && "chat_receiver"}`}>
-          //   <span className="chat_name">Praveeb</span>
-          //   Left
-          //   <span className="chat_timeStamp">3:53pm</span>
-          // </p>
-        )}
       </div>
       <div className="chat_footer">
         <InsertEmoticonIcon />
