@@ -4,6 +4,10 @@ import io from "socket.io-client";
 import SearchOutlined from "@material-ui/icons/SearchOutlined";
 import SidebarChat from "../SidebarChat/SidebarChat";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  updatemessage,
+  updategroupmessage,
+} from "../../redux/Action/userAction";
 import "./Sidebar.css";
 import { BASE_URL } from "../../config/urls";
 import ListIcon from "@material-ui/icons/List";
@@ -20,7 +24,13 @@ function Sidebar() {
     setuser(State.user);
     setmessages(State.messages);
     setgroupmessages(State.groupmessages);
-  }, [dispatch, State.groupmessages, State.messages, State.user, State.loading]);
+  }, [
+    dispatch,
+    State.groupmessages,
+    State.messages,
+    State.user,
+    State.loading,
+  ]);
 
   useEffect(() => {
     socket = io(BASE_URL);
@@ -37,6 +47,12 @@ function Sidebar() {
       socket.off();
     };
   }, [user, groupmessages, messages]);
+  useEffect(() => {
+    socket.on("message", (message) => dispatch(updatemessage(message)));
+    socket.on("groupmessage", (message) =>
+      dispatch(updategroupmessage(message))
+    );
+  }, [dispatch]);
 
   return (
     <div className="sidebar">

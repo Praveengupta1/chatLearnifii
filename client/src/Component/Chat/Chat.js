@@ -5,14 +5,12 @@ import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import "./Chat.css";
-import { updatemessage } from "../../redux/Action/userAction";
 import { handletime, handleDate } from "../../config/utils";
 import { BASE_URL } from "../../config/urls";
 let socket;
 function Chat({ user }) {
-  const dispatch = useDispatch();
   const [seed, setSeed] = useState("");
 
   const { roomId } = useParams();
@@ -42,9 +40,9 @@ function Chat({ user }) {
     socket = io(BASE_URL);
   }, [user]);
 
-  useEffect(() => {
-    socket.on("message", (message) => dispatch(updatemessage(message)));
-  }, [dispatch, room]);
+  // useEffect(() => {
+  //   socket.on("message", (message) => dispatch(updatemessage(message)));
+  // }, [dispatch, room]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -58,7 +56,6 @@ function Chat({ user }) {
   var messageBody = document.querySelector("#chat_body");
 
   useEffect(() => {
-    console.log("again ");
     if (messageBody && messageBody.scrollHeight && messageBody.clientHeight)
       messageBody.scrollTop =
         messageBody.scrollHeight - messageBody.clientHeight;

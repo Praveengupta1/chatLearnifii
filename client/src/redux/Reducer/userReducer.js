@@ -14,8 +14,6 @@ const userReducer = (state = initailState, action) => {
       let index = state.groupmessages.findIndex(
         (mess) => mess._id === action.payload._id
       );
-      console.log(action.payload);
-      console.log(index);
       state.groupmessages[index] = action.payload;
       let group = state.groupmessages;
       return {

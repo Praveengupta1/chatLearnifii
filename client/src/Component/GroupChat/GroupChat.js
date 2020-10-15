@@ -5,16 +5,15 @@ import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import "./Chat.css";
 import { BASE_URL } from "../../config/urls";
-import { updategroupmessage } from "../../redux/Action/userAction";
 import { handletime, handleDate } from "../../config/utils";
 
 let socket;
 function Chat({ user }) {
   const State = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+
   const [seed, setSeed] = useState("");
 
   const { roomId } = useParams();
@@ -50,11 +49,11 @@ function Chat({ user }) {
     };
   }, [user]);
 
-  useEffect(() => {
-    socket.on("groupmessage", (message) =>
-      dispatch(updategroupmessage(message))
-    );
-  }, [dispatch, room]);
+  // useEffect(() => {
+  //   socket.on("groupmessage", (message) =>
+  //     dispatch(updategroupmessage(message))
+  //   );
+  // }, [dispatch, room]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -69,7 +68,6 @@ function Chat({ user }) {
   var messageBody = document.querySelector("#chat_body");
 
   useEffect(() => {
-    console.log("again ");
     if (messageBody && messageBody.scrollHeight && messageBody.clientHeight)
       messageBody.scrollTop =
         messageBody.scrollHeight - messageBody.clientHeight;
@@ -94,10 +92,9 @@ function Chat({ user }) {
 
       <div className="chat_body" id="chat_body">
         {room.messages &&
-          room.messages.map(
-            (message, i) => (
-              //message.roomId === room._id && (
-                <Fragment key={i}>
+          room.messages.map((message, i) => (
+            //message.roomId === room._id && (
+            <Fragment key={i}>
               <p className="message_date">{handleDate(message.time)}</p>
               <p
                 key={i}
@@ -109,12 +106,12 @@ function Chat({ user }) {
                   {message.name ? message.name : null}
                 </span>
                 {message.message ? message.message : null}
-                <span className="chat_timeStamp">{handletime(message.time)}</span>
+                <span className="chat_timeStamp">
+                  {handletime(message.time)}
+                </span>
               </p>
-              </Fragment>
-            )
-            
-          )}
+            </Fragment>
+          ))}
       </div>
       <div className="chat_footer">
         <InsertEmoticonIcon />
