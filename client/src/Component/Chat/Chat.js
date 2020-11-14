@@ -20,7 +20,7 @@ function Chat({ user }) {
   //https://chatlearnifiibypraveen.herokuapp.com/
   const [input, setinput] = useState("");
 
-  const State = useSelector((state) => state.user);
+  const State = useSelector((state) => state.chatUser);
 
   let index = State.messages.findIndex((mess) => mess._id === roomId);
   let length =

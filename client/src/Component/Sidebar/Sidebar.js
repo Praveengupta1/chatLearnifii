@@ -14,7 +14,7 @@ import ListIcon from "@material-ui/icons/List";
 
 let socket;
 function Sidebar() {
-  const State = useSelector((state) => state.user);
+  const State = useSelector((state) => state.chatUser);
   const [messages, setmessages] = useState(State.messages);
   const [groupmessages, setgroupmessages] = useState(State.groupmessages);
   const [user, setuser] = useState(State.user);

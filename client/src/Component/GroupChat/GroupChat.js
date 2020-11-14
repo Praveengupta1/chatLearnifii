@@ -12,7 +12,7 @@ import { handletime, handleDate } from "../../config/utils";
 
 let socket;
 function Chat({ user }) {
-  const State = useSelector((state) => state.user);
+  const State = useSelector((state) => state.chatUser);
 
   const [seed, setSeed] = useState("");
 

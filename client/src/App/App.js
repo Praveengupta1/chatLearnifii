@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import "./App.css";
 
 const App = () => {
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.chatUser.user);
 
   return user ? (
     <div className="app">
