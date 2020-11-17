@@ -11,7 +11,7 @@ import {
 import "./Sidebar.css";
 import { BASE_URL } from "../../config/urls";
 import ListIcon from "@material-ui/icons/List";
-
+import Chat from "../Chat/Chat";
 let socket;
 function Sidebar() {
   const State = useSelector((state) => state.chatUser);
@@ -53,41 +53,48 @@ function Sidebar() {
       dispatch(updategroupmessage(message))
     );
   }, [dispatch]);
+  const [isChat, setIsChat] = useState(null);
 
+  const handleChat = (id) => setIsChat(id);
   return (
-    <div className="sidebar">
-      <div className="sidebar_header">
-        <SearchOutlined />
-        <input type="text" placeholder="Search Massage or Name" />
-        <IconButton>
-          <ListIcon />
-        </IconButton>
-      </div>
+    <>
+      <div className="sidebar">
+        <div className="sidebar_header">
+          <SearchOutlined />
+          <input type="text" placeholder="Search Massage or Name" />
+          <IconButton>
+            <ListIcon />
+          </IconButton>
+        </div>
 
-      <div className="sidebar_chat">
-        {messages &&
-          messages.map((message) => (
-            <SidebarChat
-              key={message._id}
-              id={message._id}
-              name={
-                message.sender.id === user.id
-                  ? message.reciver.name
-                  : message.sender.name
-              }
-            />
-          ))}
-        {groupmessages &&
-          groupmessages.map((message) => (
-            <SidebarChat
-              key={message._id}
-              id={message._id}
-              name={message.name}
-              isGroup
-            />
-          ))}
+        <div className="sidebar_chat">
+          {messages &&
+            messages.map((message) => (
+              <SidebarChat
+                key={message._id}
+                id={message._id}
+                name={
+                  message.sender.id === user.id
+                    ? message.reciver.name
+                    : message.sender.name
+                }
+                handleChat={handleChat}
+              />
+            ))}
+          {groupmessages &&
+            groupmessages.map((message) => (
+              <SidebarChat
+                key={message._id}
+                id={message._id}
+                name={message.name}
+                handleChat={handleChat}
+                isGroup
+              />
+            ))}
+        </div>
       </div>
-    </div>
+      {isChat && <Chat roomId={isChat} user={user} socket={socket} />}
+    </>
   );
 }
 

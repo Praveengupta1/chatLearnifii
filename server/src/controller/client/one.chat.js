@@ -2,11 +2,15 @@ const User = require("../../model/user.model");
 const Message = require("../../model/onetoonechat.model");
 const GroupMessage = require("../../model/groupmessage.model");
 const colors = require("../../colors/colors");
+const Decrytation = require("../../utlis/decrypt");
+const Decryptation = require("../../utlis/decrypt");
 
 exports.oneChat = async (req, res) => {
   try {
     console.log(req.body);
-    const { senderid, sendername, recivername, reciverid } = req.body;
+
+    const { senderid, sendername, recivername, UID } = req.body;
+    let reciverid = Decryptation(UID);
     if (!senderid || !sendername || !reciverid || !recivername) {
       throw { message: "sender and reciver is required " };
     }
@@ -34,6 +38,7 @@ exports.oneChat = async (req, res) => {
       reciver = new User({
         id: reciverid.toLowerCase(),
         name: recivername.toLowerCase(),
+        isvender: true,
       });
 
       await reciver.save();
@@ -101,6 +106,6 @@ exports.oneChat = async (req, res) => {
 
     res.send({ sender, reciver, messages, groupMessges });
   } catch (e) {
-    res.send({ error: e, status: 403 });
+    res.send(e);
   }
 };

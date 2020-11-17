@@ -8,12 +8,10 @@ import io from "socket.io-client";
 import { useSelector } from "react-redux";
 import "./Chat.css";
 import { handletime, handleDate } from "../../config/utils";
-import { BASE_URL } from "../../config/urls";
-let socket;
-function Chat({ user }) {
-  const [seed, setSeed] = useState("");
 
-  const { roomId } = useParams();
+function Chat({ user, roomId, socket }) {
+  console.log(roomId);
+  const [seed, setSeed] = useState("");
 
   const [room, setroom] = useState("");
 
@@ -35,10 +33,6 @@ function Chat({ user }) {
       setroom(findRoom);
     }
   }, [roomId, user, State.messages, length]);
-
-  useEffect(() => {
-    socket = io(BASE_URL);
-  }, [user]);
 
   // useEffect(() => {
   //   socket.on("message", (message) => dispatch(updatemessage(message)));
