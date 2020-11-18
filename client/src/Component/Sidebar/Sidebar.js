@@ -48,6 +48,7 @@ function Sidebar() {
     };
   }, [user, groupmessages, messages]);
   useEffect(() => {
+    console.log("message again ");
     socket.on("message", (message) => dispatch(updatemessage(message)));
     socket.on("groupmessage", (message) =>
       dispatch(updategroupmessage(message))

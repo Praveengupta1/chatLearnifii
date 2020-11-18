@@ -10,7 +10,6 @@ import "./Chat.css";
 import { handletime, handleDate } from "../../config/utils";
 
 function Chat({ user, roomId, socket }) {
-  console.log(roomId);
   const [seed, setSeed] = useState("");
 
   const [room, setroom] = useState("");

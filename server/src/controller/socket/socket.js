@@ -17,7 +17,7 @@ const chatSocket = function (io) {
 
     socket.on("make_connections", async (data, callback) => {
       const { user, messages, groupmessages } = data;
-      //console.log(user);
+
       await updateUser({ user, isOnline: true });
       await updateMessage({
         user: user.id,
@@ -33,14 +33,14 @@ const chatSocket = function (io) {
     });
 
     socket.on("sendMessage", async ({ message, user, room }, callback) => {
-      console.log("id" + room._id);
+      console.log("id " + room._id);
       await newMessage({
         user: user,
         message: message,
         id: room._id,
       });
       const updatedmessage = await Message.findOne({ _id: room._id });
-      io.emit("message", {
+      socket.emit("message", {
         message: updatedmessage,
       });
       callback();

@@ -11,7 +11,12 @@ const server = http.createServer(app);
 const io = require("socket.io")(server);
 
 // apply app middleware
-app.use(cors({ credentials: true, origin: true }));
+var corsOptions = {
+  origin: true,
+  credentials: true,
+};
+io.set("origins", "*:*");
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
