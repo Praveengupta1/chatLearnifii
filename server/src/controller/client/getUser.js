@@ -8,7 +8,7 @@ exports.getUser = async (req, res) => {
     console.log(req.body);
     const { id, name } = req.body;
 
-    if (!id) {
+    if (!id || !name) {
       throw { error: "user id is not exists" };
     }
     let user = await User.findOne({ id: id });
