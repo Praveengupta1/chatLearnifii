@@ -2,7 +2,6 @@ const User = require("../../model/user.model");
 const Message = require("../../model/onetoonechat.model");
 const GroupMessage = require("../../model/groupmessage.model");
 const colors = require("../../colors/colors");
-const Decrytation = require("../../utlis/decrypt");
 const Decryptation = require("../../utlis/decrypt");
 
 exports.oneChat = async (req, res) => {
